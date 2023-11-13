@@ -22,11 +22,36 @@ const PromptCardList = ({ data, handleTagClick }) => {
 }
 
 const Feed = () => {
-  const [searchText, setSearchText ] = useState('');
   const [ posts, setPosts ] = useState([]);
   
-  const handleSearchChange = (e) => {
+   // Search states
+  const [searchText, setSearchText] = useState("");
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const [searchedResults, setSearchedResults] = useState([]);
+  
 
+  const filterPrompts = (searchtext) => {
+    const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
+    return posts.filter(
+      (item) =>
+        regex.test(item.creator.username) ||
+        regex.test(item.tag) ||
+        regex.test(item.prompt)
+    );
+  };
+
+  const handleSearchChange = (e) => {
+    e.preventDefault()
+    clearTimeout(searchTimeout);
+    setSearchText(e.target.value);
+
+    // debounce method
+    setSearchTimeout(
+      setTimeout(() => {
+        const searchResult = filterPrompts(e.target.value);
+        setSearchedResults(searchResult);
+      }, 500)
+    );
   }
 
   useEffect(() => {
@@ -51,10 +76,15 @@ const Feed = () => {
         />
       </form>
 
-      <PromptCardList 
-        data={posts}
-        handleTagClick={() => {}}
-      />
+      {/* All Prompts */}
+      {searchText ? (
+        <PromptCardList
+          data={searchedResults}
+          handleTagClick={() => {}}
+        />
+      ) : (
+        <PromptCardList data={posts} handleTagClick={() => {}} />
+      )}
     </section>
   )
 }
