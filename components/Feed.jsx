@@ -23,12 +23,21 @@ const PromptCardList = ({ data, handleTagClick }) => {
 
 const Feed = () => {
   const [ posts, setPosts ] = useState([]);
-  
+
    // Search states
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
   
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await fetch('/api/prompt');
+      const data = await response.json();
+      setPosts(data);
+    }
+    fetchPosts();
+  }, [])
 
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
@@ -54,14 +63,12 @@ const Feed = () => {
     );
   }
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch('/api/prompt');
-      const data = await response.json();
-      setPosts(data);
-    }
-    fetchPosts();
-  }, [])
+  const handleTagClick = (tagName) => {
+    setSearchText(tagName);
+
+    const searchResult = filterPrompts(tagName);
+    setSearchedResults(searchResult);
+  };
 
   return (
     <section className="feed">
@@ -80,10 +87,10 @@ const Feed = () => {
       {searchText ? (
         <PromptCardList
           data={searchedResults}
-          handleTagClick={() => {}}
+          handleTagClick={handleTagClick}
         />
       ) : (
-        <PromptCardList data={posts} handleTagClick={() => {}} />
+        <PromptCardList data={posts} handleTagClick={handleTagClick} />
       )}
     </section>
   )

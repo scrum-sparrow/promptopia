@@ -22,7 +22,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete}) => {
     return postTags.split(" ").map((tag) => (
     <p 
       className="font-inter text-sm blue_gradient cursor-pointer"
-      onClick={() => handleTagClick && handleTagClick(post.tag) }
+      onClick={() => handleTagClick && handleTagClick(tag) }
     >
     #{tag}
     </p>
