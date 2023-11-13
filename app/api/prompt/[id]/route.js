@@ -13,7 +13,7 @@ export const GET = async (request, { params }) => {
 
         return new Response(JSON.stringify(prompt), { status: 200 })
     } catch (error) {
-        return new Response(JSON.stringify('Failed to fetch the prompt'), { status: 500 })
+        return new Response('Failed to fetch the prompt', { status: 500 })
     }
 }
 
@@ -48,11 +48,11 @@ export const DELETE = async (request, { params }) => {
     try {
         await connectToDB();
 
-        await Prompt.findByIdAndRemove(params.id);
+        await Prompt.findByIdAndDelete(params.id);
 
-        return new Response("Prompt deleted successfully"), { status: 200 };
+        return new Response("Prompt deleted successfully", { status: 200 });
 
     } catch (error) {
-        return new Response("Failed to delete prompt"), { status: 500 };
+        return new Response("Failed to delete prompt", { status: 500 });
     }
 }
